@@ -4,7 +4,7 @@ RM	= rm -f
 
 NAME = philo
 
-SRCS = philo.c
+SRCS = philo.c utils.c set_settings.c
 
 OBJS = $(SRCS:.c=.o)
 
