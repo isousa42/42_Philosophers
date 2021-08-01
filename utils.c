@@ -65,3 +65,31 @@ int check_arg(char **argv)
     }
     return (0);
 }
+
+void	ft_lstadd_back(t_idlist **lst, t_idlist *new)
+{
+	t_idlist	*temp;
+
+	if (!new)
+		return ;
+	if (!*lst)
+	{
+		*lst = new;
+		return ;
+	}
+	temp = ft_lstlast(*lst);
+	temp->next = new;
+}
+
+t_idlist	*ft_lstnew(void *content)
+{
+	t_idlist	*new;
+
+	new = (t_idlist *)malloc(sizeof(t_idlist));
+	if (!new)
+		return (NULL);
+	new->content = content;
+	new->next = NULL;
+	return (new);
+}
+

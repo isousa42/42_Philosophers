@@ -4,6 +4,13 @@
 #include <sys/time.h>
 #include <pthread.h>
 
+//list of threads id
+typedef struct	s_idlist
+{
+	pthread_t   *content;
+	struct s_idlist	*next;
+}				t_idlist;
+
 //struct to initialize the arguments from argv
 typedef struct  s_set
 {
@@ -12,6 +19,8 @@ typedef struct  s_set
     int time_to_eat;
     int time_to_sleep;
     int nb_meals;
+    struct s_idlist *id_list;
+    
 }               t_set;
 
 //utils

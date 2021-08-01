@@ -17,4 +17,5 @@ void    set_set(char **argv, t_set *set)
     set->time_to_sleep = ft_atoi(argv[4]);
     if (argv[5])
         set->nb_meals = ft_atoi(argv[5]);
+    set->id_list = NULL;
 }
