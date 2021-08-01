@@ -2,29 +2,45 @@
 
 void    *philo1(void *arg)
 {
-    int *ptr;
-    ptr = (int *)arg;
+    t_set *set;
+    set = (t_set *)arg;
 
-    printf("AQUI\n");    
-    if ((*ptr) == 0)
+    t_philo philo;
+
+    philo.meals = set->nb_meals;
+    philo.id = set->id_index;
+
+    while (philo.meals > 0)
     {
-        printf("this is philo 1\n");
+        pthread_mutex_lock(&set->fork);
+        printf("Philo %d start eating\n", philo.id);
+        //sleep(3);
+        philo.meals--;
+        printf("Philo %d finished eating\n", philo.id);
+        pthread_mutex_unlock(&set->fork);
         sleep(5);
-        printf("this is philo 1 for the 2n time\n");
 
     }
-    if ((*ptr) == 1)
-    {
-        printf("this is philo 2\n");
-        sleep(5);
-        printf("this is philo 2 for the 2n time\n");
-    }
-    if ((*ptr) == 2)
-    {
-        printf("this is philo 3\n");
-        sleep(5);
-        printf("this is philo 3 for the 2n time\n");
-    }
+
+    // if ((set->id_index) == 0)
+    // {
+    //     printf("this is philo 1\n");
+    //     sleep(5);
+    //     printf("this is philo 1 for the 2n time\n");
+
+    // }
+    // if ((set->id_index) == 1)
+    // {
+    //     printf("this is philo 2\n");
+    //     sleep(5);
+    //     printf("this is philo 2 for the 2n time\n");
+    // }
+    // if ((set->id_index) == 2)
+    // {
+    //     printf("this is philo 3\n");
+    //     sleep(5);
+    //     printf("this is philo 3 for the 2n time\n");
+    // }
 
     return NULL;
 }
@@ -44,24 +60,21 @@ int main(int argc, char **argv)
 
     // allocate memory for id of philos
     id = malloc(sizeof(pthread_t) * (set.nb_philo));
-    
-    int i = 0;
-
-    while (i < 3)
+    pthread_mutex_init(&(set.fork), NULL);
+    //create threads
+    while (set.id_index < 3)
     {
-        printf("CHEGOU\n");    
-
-        pthread_create(&(id[i]), NULL, philo1, &i);
+        pthread_create(&(id[set.id_index]), NULL, philo1, &set);
         sleep(1);
-        
-        i++;
+        set.id_index++;
     }
 
-    i = 0;
-    while (i < 3)
+    //join threads
+    set.id_index = 0;
+    while (set.id_index < 3)
     {
-        pthread_join(id[i], NULL);
-        i++;
+        pthread_join(id[set.id_index], NULL);
+        set.id_index++;
     }
 
     return (0);

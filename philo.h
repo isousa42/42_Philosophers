@@ -4,13 +4,6 @@
 #include <sys/time.h>
 #include <pthread.h>
 
-//list of threads id
-typedef struct	s_idlist
-{
-	pthread_t   *content;
-	struct s_idlist	*next;
-}				t_idlist;
-
 //struct to initialize the arguments from argv
 typedef struct  s_set
 {
@@ -19,9 +12,17 @@ typedef struct  s_set
     int time_to_eat;
     int time_to_sleep;
     int nb_meals;
-    struct s_idlist *id_list;
+    int id_index;
+    int death;
+    pthread_mutex_t fork;
     
 }               t_set;
+
+typedef struct  s_philo
+{
+    int id;
+    int meals;
+}               t_philo;
 
 //utils
 double dif_time(struct timeval *start, struct timeval *end);
