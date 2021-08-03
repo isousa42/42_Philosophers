@@ -14,33 +14,12 @@ void    *philo1(void *arg)
     {
         pthread_mutex_lock(&set->fork);
         printf("Philo %d start eating\n", philo.id);
-        //sleep(3);
         philo.meals--;
         printf("Philo %d finished eating\n", philo.id);
         pthread_mutex_unlock(&set->fork);
         sleep(5);
 
     }
-
-    // if ((set->id_index) == 0)
-    // {
-    //     printf("this is philo 1\n");
-    //     sleep(5);
-    //     printf("this is philo 1 for the 2n time\n");
-
-    // }
-    // if ((set->id_index) == 1)
-    // {
-    //     printf("this is philo 2\n");
-    //     sleep(5);
-    //     printf("this is philo 2 for the 2n time\n");
-    // }
-    // if ((set->id_index) == 2)
-    // {
-    //     printf("this is philo 3\n");
-    //     sleep(5);
-    //     printf("this is philo 3 for the 2n time\n");
-    // }
 
     return NULL;
 }

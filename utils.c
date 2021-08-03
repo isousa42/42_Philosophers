@@ -1,9 +1,11 @@
 #include "philo.h"
 
-double dif_time(struct timeval *start, struct timeval *end)
+double dif_time()
 {
     double dif_time;
+	struct timeval time1;
 
+	
     dif_time = (end->tv_sec - start->tv_sec) * 1000.0;
     dif_time += (end->tv_usec - start->tv_usec) / 1000.0;
     
