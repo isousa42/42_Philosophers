@@ -1,15 +1,26 @@
 #include "philo.h"
 
+// int check_death(double time,)
+// {
+    
+// }
+
 void    *philo1(void *arg)
 {
     t_set *set;
     set = (t_set *)arg;
 
     t_philo philo;
-    struct timeval start_time;
+    double time;
+    
+    if (philo.id == 0 && set->flag == 0)
+    {
+        gettimeofday(&(set->start_time), NULL);
+        set->flag = 1;
+    }
 
     philo.meals = set->nb_meals;
-    philo.id = set->id_index;
+    philo.id = set->id_index + 1;
 
     while (philo.meals > 0)
     {
@@ -17,15 +28,20 @@ void    *philo1(void *arg)
         {
             pthread_mutex_lock(&set->fork[0]);
             pthread_mutex_lock(&set->fork[set->nb_philo - 1]);
+            time = diff_time(&set->start_time);
+            print_timestamp(0, time, philo.id);
         }
         else
         {
             pthread_mutex_lock(&set->fork[philo.id]);
             pthread_mutex_lock(&set->fork[philo.id - 1]);
+            time = diff_time(&set->start_time);
+            print_timestamp(0, time, philo.id);
         }
-        printf("Philo %d start eating\n", philo.id);
+        time = diff_time(&set->start_time);
+        print_timestamp(1, time, philo.id);
+        sleep(set->time_to_eat);
         philo.meals--;
-        printf("Philo %d finished eating\n", philo.id);
         if (philo.id == 0)
         {
             pthread_mutex_unlock(&set->fork[0]);
@@ -36,7 +52,11 @@ void    *philo1(void *arg)
             pthread_mutex_unlock(&set->fork[philo.id]);
             pthread_mutex_unlock(&set->fork[philo.id - 1]);
         }
+        time = diff_time(&set->start_time);
+        print_timestamp(2, time, philo.id);
         sleep(set->time_to_sleep);
+        time = diff_time(&set->start_time);
+        print_timestamp(3, time, philo.id);
     }
     return NULL;
 }

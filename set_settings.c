@@ -9,6 +9,7 @@ void    init_set(t_set *set)
     set->nb_meals = -1;
     set->id_index = 0;
     set->death = 0;
+    set->flag = 0;
 }
 
 void    set_set(char **argv, t_set *set)

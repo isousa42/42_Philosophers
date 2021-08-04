@@ -15,6 +15,8 @@ typedef struct  s_set
     int id_index;
     int death;
     pthread_mutex_t *fork;
+    struct timeval start_time;
+    int flag;
     
 }               t_set;
 
@@ -22,10 +24,12 @@ typedef struct  s_philo
 {
     int id;
     int meals;
+    
 }               t_philo;
 
 //utils
-//double dif_time(struct timeval *start, struct timeval *end);
+double diff_time(struct timeval *start_time);
+void	print_timestamp(int control, double time, int philo_id);
 int	ft_atoi(const char *str);
 int	ft_isdigit(int c);
 int check_arg(char **argv);

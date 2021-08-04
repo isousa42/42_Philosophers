@@ -1,16 +1,31 @@
 #include "philo.h"
 
-// double dif_time()
-// {
-//     double dif_time;
-// 	struct timeval time1;
 
-	
-//     dif_time = (end->tv_sec - start->tv_sec) * 1000.0;
-//     dif_time += (end->tv_usec - start->tv_usec) / 1000.0;
+void	print_timestamp(int control, double time, int philo_id)
+{
+	if (control == 0)
+		printf("%.3f %d has taken a fork\n", time, philo_id);
+	else if (control == 1)
+		printf("%.3f %d is eating\n", time, philo_id);
+	else if (control == 2)
+		printf("%.3f %d is sleeping\n", time, philo_id);
+	else if (control == 3)
+		printf("%.3f %d is thinking\n", time, philo_id);
+	else if (control == 4)
+		printf("%.3f %d died\n", time, philo_id);
+}
+
+double diff_time(struct timeval *start_time)
+{
+    double diff_time;
+	struct timeval end_time;
+
+	gettimeofday(&end_time, NULL);
+    diff_time = (end_time.tv_sec - start_time->tv_sec) * 1000.0;
+    diff_time += (end_time.tv_usec - start_time->tv_usec) / 1000.0;
     
-//     return (dif_time);
-// }
+    return (diff_time);
+}
 
 int	ft_atoi(const char *str)
 {
