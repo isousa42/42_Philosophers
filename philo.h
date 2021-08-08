@@ -15,8 +15,10 @@ typedef struct  s_set
     int id_index;
     int death;
     pthread_mutex_t *fork;
+    pthread_mutex_t print;
     struct timeval start_time;
     int flag;
+    int start;
     
 }               t_set;
 
@@ -24,7 +26,6 @@ typedef struct  s_philo
 {
     int id;
     int meals;
-    
 }               t_philo;
 
 //utils
