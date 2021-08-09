@@ -2,133 +2,79 @@
 
 // PHILO 1 AND IMPAR EATING ONLY WITH 1 FORK
 
-int check_death(double time, double last_meal, int time_to_die)
+void    init_thread(t_set *set, t_philo *philo)
 {
-    if (time - (last_meal) > time_to_die)
-        return (1);
-    return (0);
-}
-
-void    *philo1(void *arg)
-{
-    t_set *set;
-    set = (t_set *)arg;
-    while(set->start);
-
-
-    t_philo philo;
-    double time = 0;
-    double last_meal = 0;
+    philo->last_meal = 0;
     
-    if (philo.id == 0 && set->flag == 0)
+    if (philo->id == 0 && set->flag == 0)
     {
         gettimeofday(&(set->start_time), NULL);
         set->flag = 1;
     }
 
-    philo.meals = set->nb_meals;
-    philo.id = set->id_index + 1;
+    philo->meals = set->nb_meals;
+    philo->id = set->id_index + 1;
+}
 
+
+void    *philo1(void *arg)
+{
+    t_set *set;
+    set = (t_set *)arg;
+    t_philo philo;
+    init_thread(set, &philo);
+
+    // printf("%p\n", set);
+    printf("%p\n", &(set->id_index));
     while (philo.meals)
     {
+        //GRAB FORKS -- MAKE UPDATE !!!
         if (philo.id == 0)
-        {
-            pthread_mutex_lock(&set->fork[0]);
-            pthread_mutex_lock(&set->fork[set->nb_philo - 1]);
-            pthread_mutex_lock(&set->print);
-            //time = diff_time(&set->start_time);
-            print_timestamp(0, diff_time(&set->start_time), philo.id);
-            pthread_mutex_unlock(&set->print);
-        }
+            grab_forks(set, &philo, 0, set->nb_philo - 1);
         else
-        {
-            pthread_mutex_lock(&set->fork[philo.id]);
-            pthread_mutex_lock(&set->fork[philo.id - 1]);
-            pthread_mutex_lock(&set->print);
-            //time = diff_time(&set->start_time);
-            print_timestamp(0, diff_time(&set->start_time), philo.id);
-            pthread_mutex_unlock(&set->print);
-        }
+            grab_forks(set, &philo, philo.id, philo.id - 1);
 
-        pthread_mutex_lock(&set->print);
-        last_meal = diff_time(&set->start_time);
-        print_timestamp(1, last_meal, philo.id);
-        pthread_mutex_unlock(&set->print);
-        usleep(set->time_to_eat * 1000);
+        // EAT SPAGHETTI
+        eat_spaghetti(set, &philo);
 
         // CHECK DEATH
-        //time = diff_time(&set->start_time);
-        if (check_death(diff_time(&set->start_time), last_meal, set->time_to_die))
-        {
-            pthread_mutex_lock(&set->print);
+        check_death(diff_time(&set->start_time), philo.last_meal, set, &philo);
 
-            printf("TIME = %f, LAST_MEAL = %f\n", diff_time(&set->start_time), last_meal);
-            print_timestamp(4, diff_time(&set->start_time), philo.id);
-            pthread_mutex_unlock(&set->print);
-
-            exit(0);
-        }
-
-        philo.meals--;
+        // DROP FORKS
         if (philo.id == 0)
-        {
-            pthread_mutex_unlock(&set->fork[0]);
-            pthread_mutex_unlock(&set->fork[set->nb_philo - 1]);
-        }
+            drop_forks(set, 0, set->nb_philo - 1);
         else
-        {
-            pthread_mutex_unlock(&set->fork[philo.id]);
-            pthread_mutex_unlock(&set->fork[philo.id - 1]);
-        }
-        pthread_mutex_lock(&set->print);
-        //time = diff_time(&set->start_time);
-        print_timestamp(2, diff_time(&set->start_time), philo.id);
-        pthread_mutex_unlock(&set->print);
+            drop_forks(set, philo.id, philo.id - 1);
 
-
-// CHECK DEATH
-        time = diff_time(&set->start_time);
-        if (check_death(time, last_meal, set->time_to_die))
-        {
-            pthread_mutex_lock(&set->print);
-
-            printf("TIME = %f, LAST_MEAL = %f\n", time, last_meal);
-            print_timestamp(4, diff_time(&set->start_time), philo.id);
-            pthread_mutex_unlock(&set->print);
-
-            exit(0);
-        }
-
-
-        // PUT WHILE HERE (break when passes the time to usleep)
-        usleep(set->time_to_sleep * 1000);
-        pthread_mutex_lock(&set->print);
-        time = diff_time(&set->start_time);
-        print_timestamp(3, time, philo.id);
-        pthread_mutex_unlock(&set->print);
+        // SLEEPING
+        go_sleep(set, &philo);
 
         // CHECK DEATH
-        time = diff_time(&set->start_time);
-        if (check_death(time, last_meal, set->time_to_die))
-        {
-            pthread_mutex_lock(&set->print);
+        check_death(diff_time(&set->start_time), philo.last_meal, set, &philo);
+        
+        // THINKING
+        go_think(set, &philo);
 
-            printf("TIME = %f, LAST_MEAL = %f\n", time, last_meal);
-            print_timestamp(4, diff_time(&set->start_time), philo.id);
-            pthread_mutex_unlock(&set->print);
-
-            exit(0);
-        }
-
+        // CHECK DEATH
+        check_death(diff_time(&set->start_time), philo.last_meal, set, &philo);
     }
     return (NULL);
+}
+
+t_philo *create_philo(t_set *set, int id_index)
+{
+    t_philo *philo;
+
+    philo = malloc(sizeof(t_philo));
+    philo->set = set;
+    
 }
 
 int main(int argc, char **argv)
 {
     t_set set;
+    t_philo *philo;
     pthread_t *id = NULL;
-    set.start = 1;
 
     if (argc < 5 || argc > 6 || (check_arg(argv) == 1))
     {
@@ -151,6 +97,7 @@ int main(int argc, char **argv)
     //create threads
     while (set.id_index < set.nb_philo)
     {
+        philo = create_philo(&set, set.id_index);
         pthread_create(&(id[set.id_index]), NULL, philo1, &set);
         usleep(50);
         set.id_index++;
@@ -163,7 +110,6 @@ int main(int argc, char **argv)
         pthread_join(id[set.id_index], NULL);
         set.id_index++;
     }
-    set.start = 0;
 
     return (0);
 }

@@ -1,6 +1,26 @@
 #include "philo.h"
 
 
+void    check_death(double time, double last_meal, t_set *set, t_philo *philo)
+{
+    time = diff_time(&set->start_time);
+    if (death_calc(time, last_meal, set->time_to_die))
+    {
+        pthread_mutex_lock(&set->print);
+        printf("TIME = %f, LAST_MEAL = %f\n", time, last_meal);
+        print_timestamp(4, diff_time(&set->start_time), philo->id);
+        pthread_mutex_unlock(&set->print);
+        exit(0);
+    }
+}
+
+int death_calc(double time, double last_meal, int time_to_die)
+{
+    if (time - (last_meal) > time_to_die)
+        return (1);
+    return (0);
+}
+
 void	print_timestamp(int control, double time, int philo_id)
 {
 	if (control == 0)
