@@ -10,6 +10,7 @@ void    init_set(t_set *set)
     set->id_index = 0;
     set->death = 0;
     set->flag = 0;
+    set->fork = NULL;
 }
 
 void    set_set(char **argv, t_set *set)
