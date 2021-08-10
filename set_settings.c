@@ -74,3 +74,15 @@ void    init_mutex(t_set *set)
     pthread_mutex_init(&(set->print_n_death), NULL);
 }
 
+void    destroy_mutex(t_set *set)
+{
+    int x;
+
+    x = 0;
+    while (x < set->nb_philo)
+    {
+        pthread_mutex_destroy(&(set->fork[x]));
+        x++;
+    }
+    pthread_mutex_destroy(&(set->print_n_death));
+}   

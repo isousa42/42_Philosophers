@@ -1,7 +1,5 @@
 #include "philo.h"
 
-// LEAKS
-
 void    *philo1(void *arg)
 {
     t_set *set;
@@ -32,6 +30,7 @@ void    *philo1(void *arg)
             break;
         usleep(1000);
     }
+    free(philo);
     return (NULL);
 }
 
@@ -59,5 +58,8 @@ int main(int argc, char **argv)
     set.fork = malloc(sizeof(pthread_mutex_t) * (set.nb_philo));
     init_mutex(&set);
     creat_and_join(&set, philo, id);
+    destroy_mutex(&set);
+    free(id);
+    free(set.fork);
     return (0);
 }

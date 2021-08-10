@@ -1,5 +1,5 @@
 CC	= gcc
-FLAGS = -Wall -Wextra -Werror -lpthread
+FLAGS = -Wall -Wextra -Werror -lpthread -std=c11 -ggdb3
 RM	= rm -f
 
 NAME = philo
