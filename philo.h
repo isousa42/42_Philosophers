@@ -50,3 +50,5 @@ t_philo *create_philo(t_set *set, int id_index);
 void    creat_and_join(t_set *set, t_philo *philo, pthread_t *id);
 void    init_mutex(t_set *set);
 void    destroy_mutex(t_set *set);
+void    destroy_mutex(t_set *set);
+void	ft_bzero(void *str, size_t n);
