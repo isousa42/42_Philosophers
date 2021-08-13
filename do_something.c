@@ -12,7 +12,7 @@ int	grab_forks(t_set *set, t_philo *philo, int fork_left, int fork_right)
 	}
 	else
 	{
-		usleep(1000);
+		usleep(200);
 		pthread_mutex_lock(&set->fork[fork_right]);
 		pthread_mutex_lock(&set->fork[fork_left]);
 	}

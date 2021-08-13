@@ -44,6 +44,7 @@ void	*philo1(void *arg)
 			break ;
 		if (go_think(set, philo))
 			break ;
+		usleep(500);
 	}
 	pthread_mutex_unlock(&set->print_n_death);
 	free(philo);
