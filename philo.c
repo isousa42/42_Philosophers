@@ -1,5 +1,7 @@
 #include "philo.h"
 
+// PROTECT MALLOC. Correct the printing time to die. Is iying after it is supposed
+
 void	init_set(t_set *set)
 {
 	set->nb_philo = 0;
