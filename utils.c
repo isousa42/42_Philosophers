@@ -1,30 +1,34 @@
 #include "philo.h"
 
-int	check_death(double time, double last_meal, t_set *set, t_philo *philo)
+int	check_death(double last_meal, t_set *set, t_philo *philo)
 {
+	double	time;
+
 	pthread_mutex_lock(&set->print_n_death);
-	time = diff_time(&set->start_time) - 10;
+	time = diff_time(&set->start_time);
 	if (set->philo_is_dead)
 		return (1);
-	if (death_calc(set, (int)time, (int)last_meal, philo->id))
+	if (death_calc(set, time, last_meal, philo->id))
 		return (1);
 	pthread_mutex_unlock(&set->print_n_death);
 	return (0);
 }
 
-int	death_calc(t_set *set, int time, int last_meal, int philo)
+int	death_calc(t_set *set, float time, float last_meal, int philo)
 {
 	if (time - (last_meal) > set->time_to_die)
 	{
+		print_timestamp(set, 4, diff_time(&set->start_time), philo);
 		set->philo_is_dead = 1;
-		print_timestamp(4, diff_time(&set->start_time), philo);
 		return (1);
 	}
 	return (0);
 }
 
-void	print_timestamp(int control, double time, int philo_id)
+void	print_timestamp(t_set *set, int control, double time, int philo_id)
 {
+	if (set->philo_is_dead)
+		return ;
 	if (control == 0)
 	{
 		printf("%.f %d has taken a fork\n", time, philo_id);

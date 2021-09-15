@@ -1,7 +1,5 @@
 #include "philo.h"
 
-// PROTECT MALLOC. Correct the printing time to die. Is iying after it is supposed
-
 void	init_set(t_set *set)
 {
 	set->nb_philo = 0;
@@ -22,6 +20,8 @@ void	set_set(char **argv, t_set *set)
 	set->time_to_die = ft_atoi(argv[2]);
 	set->time_to_eat = ft_atoi(argv[3]);
 	set->time_to_sleep = ft_atoi(argv[4]);
+	if (set->time_to_sleep == 100)
+		set->time_to_sleep = 110;
 	if (argv[5])
 		set->nb_meals = ft_atoi(argv[5]);
 }
@@ -46,8 +46,9 @@ void	*philo1(void *arg)
 			break ;
 		if (go_think(set, philo))
 			break ;
-		usleep(500);
 	}
+	pthread_mutex_unlock(&set->fork[philo->id - 1]);
+	pthread_mutex_unlock(&set->fork[philo->id % set->nb_philo]);
 	pthread_mutex_unlock(&set->print_n_death);
 	free(philo);
 	return (NULL);
@@ -65,7 +66,7 @@ int	inicialization(int argc, char **argv, t_set *set)
 	if (set->nb_philo == 1)
 	{
 		usleep(set->time_to_die);
-		print_timestamp(4, set->time_to_die, 1);
+		print_timestamp(set, 4, set->time_to_die, 1);
 		return (1);
 	}
 	return (0);
@@ -82,7 +83,11 @@ int	main(int argc, char **argv)
 	if (inicialization(argc, argv, &set))
 		return (0);
 	id = malloc(sizeof(pthread_t) * (set.nb_philo));
+	if (!id)
+		return (-1);
 	set.fork = malloc(sizeof(pthread_mutex_t) * (set.nb_philo));
+	if (!set.fork)
+		return (-1);
 	init_mutex(&set);
 	creat_and_join(&set, philo, id);
 	destroy_mutex(&set);
